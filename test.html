@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>heheTest</title>
+    <style type="text/css">
+        #canvas2
+        {
+            display: none;
+        }
+    </style>
+
+
+    <script type="text/javascript">
+
+        var CANVAS_WIDTH = 1200;
+        var CANVAS_HEIGHT = 600;
+        var ctx;
+        var canvas1;
+
+        var canvas2;
+        var ctx2;
+
+        var mouseX;
+        var mouseY;
+        var fDraw;
+
+
+        function init()
+        {
+            canvas1 = document.getElementById("canvas");
+            ctx = canvas1.getContext('2d');
+            canvas2 = document.getElementById("canvas2");
+            ctx2 = canvas2.getContext('2d');
+//<!---->
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(0,0);
+            ctx.lineTo(100,100);
+            ctx.stroke();
+
+            ctx2.lineWidth = 7;
+            ctx2.beginPath();
+            ctx2.moveTo(0,0);
+            ctx2.lineTo(100,100);
+            ctx2.stroke();
+
+            canvas1.addEventListener('mousedown',beginDraw,false);
+            canvas1.addEventListener('mousemove',drawing,false);
+            canvas1.addEventListener('mouseup',endDraw,false);
+            /* 		alert("heheeee"); */
+
+            /* 		var rootView = new RootView(); */
+            /* 		rootView.gameBegin(); */
+            /* 		var circle = new Circle(300,300,100); */
+            /* 		circle.draw(); */
+            /* 		rootView.addSubview(circle); */
+            /* 		circle.beginMove(); */
+            /* 		rootView.gameBegin(); */
+
+            //ctx.beginPath();
+            //ctx.strokeStyle = "rgb(200,0,0)";
+            //ctx.arc(200,200,50,0, 2 * Math.PI, true);
+//		ctx.stroke();
+            //ctx.fill();
+
+        }
+
+        function beginDraw(ev)
+        {
+            fDraw = true;
+            if (ev.layerX || ev.layerX == 0)
+            {
+                mouseX = ev.layerX;
+                mouseY = ev.layerY;
+            }
+            else if (ev.offsetX || ev.offsetX == 0)
+            {
+                mouseX = ev.offsetX;
+                mouseY = ev.offsetY;
+            }
+            else
+            {
+                fDraw = false;
+            }
+        }
+        function drawing(ev)
+        {
+           if (fDraw)
+           {
+               var newMouseX;
+               var newMouseY;
+               if (ev.layerX || ev.layerX == 0)
+               {
+                   newMouseX = ev.layerX;
+                   newMouseY = ev.layerY;
+               }
+               else if (ev.offsetX || ev.offsetX == 0)
+               {
+                   newMouseX = ev.offsetX;
+                   newMouseY = ev.offsetY;
+               }
+
+               if (mouseX < 400 && mouseY < 200)
+               {
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.moveTo(mouseX, mouseY);
+                    ctx.lineTo(newMouseX, newMouseY);
+                    ctx.stroke();
+
+                    ctx2.lineWidth = 4;
+                    ctx2.beginPath();
+                    ctx2.moveTo(mouseX, mouseY);
+                    ctx2.lineTo(newMouseX, newMouseY);
+                   ctx2.stroke();
+//                   alert(hehe);
+
+               }
+               mouseX = newMouseX;
+               mouseY = newMouseY;
+           }
+        }
+        function endDraw(ev)
+        {
+            fDraw = false;
+        }
+
+        function Circle(x,y,radius)
+        {
+            this.x = x;
+            this.y = y;
+            this.radius = radius;
+        }
+
+
+        Circle.prototype =
+        {
+            constructor:Circle,
+            draw:
+                    function()
+                    {
+                        ctx.beginPath();
+                        ctx.strokeStyle = "rgb(200,0,0)"	;
+                        ctx.arc(this.x,this.y,this.radius,0,2 * Math.PI, true);
+                        ctx.stroke();
+                    },
+            move:
+                    function()
+                    {
+                        this.x += 1;
+                    },
+
+            beginMove:
+                    function()
+                    {
+                        window.setInterval(this.move.bind(this), 0.1);
+                    }
+        };
+
+
+        function RootView()
+        {
+            this.subviews = new Array();
+        }
+
+        RootView.prototype =
+        {
+
+            constructor:RootView,
+
+            redraw:
+                    function()
+                    {
+
+                        this.clear();
+                        for	(var i = 0; i < this.subviews.length; i++)
+                        {
+                            this.subviews[i].draw();
+                        }
+                    },
+            addSubview:
+                    function(subview)
+                    {
+                        this.subviews.push(subview);
+                    },
+
+            clear:
+                    function()
+                    {
+                        ctx.clearRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
+
+                    },
+
+            gameBegin:
+                    function()
+                    {
+                        window.setInterval(this.redraw.bind(this),1);
+                    }
+        };
+
+        function makeImage()
+        {
+            window.location = canvas2.toDataURL("image/png");
+
+        }
+
+    </script>
+
+</head>
+<body onload="init()">
+
+<canvas id="canvas" width="1200" height="600">
+    Doesn't support
+</canvas>
+<canvas id="canvas2" width="400" height="200">
+    Doesn't support
+</canvas>
+<br/>
+<p>hehe</p>
+<input type="button" value="hehe" onclick="makeImage()"/>
+
+
+</body>
+
+</html>
