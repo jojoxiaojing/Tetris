@@ -1,3 +1,18 @@
+var BLOCK_SIZE = 20;
+
+function getNewBlock()
+{
+    var block = null;
+    parseInt(Math.random() * 7);
+
+}
+
+function drawBlock(x,y,block)
+{
+    var imgName = getColorImage(block.color);
+    ///////未完
+}
+
 function Point(x,y)
 {
     this.x = x;
@@ -6,8 +21,48 @@ function Point(x,y)
 
 function getColorImage(color)
 {
-    return "block" + color + ".png";
+    return "img/block" + color + ".png";
 }
+
+
+///////////////////////////////////
+function Block0(color)                    // 00
+{                                         //00
+    this.color = color;
+    this.points = [new Point(1,0), new Point(0,0), new Point(0,1), new Point(-1,1)];
+    this.state = 0;
+}
+Block0.prototype =
+{
+    constructor:Block0,
+    rotate:
+        function()
+        {
+            if (this.state == 0)        // 00
+            {                           //00
+                this.state = 1;
+
+                this.points[0].x = 0;
+                this.points[0].y = -1;
+                this.points[2].x = 1;
+                this.points[2].y = 0;
+                this.points[3].x = 1;
+                this.points[3].y = 1;
+            }
+            else                        //1
+            {                           //11
+                this.state = 0;         // 1
+
+                this.points[0].x = 1;
+                this.points[0].y = 0;
+                this.points[2].x = 0;
+                this.points[2].y = 1;
+                this.points[3].x = -1;
+                this.points[3].y = 1;
+            }
+
+        }
+};
 
 ///////////////////////////////////
 function Block1(color)      //00
@@ -288,40 +343,3 @@ Block6.prototype =
 };
 
 ///////////////////////////////////
-function Block7(color)                    // 00
-{                                         //00
-    this.color = color;
-    this.points = [new Point(1,0), new Point(0,0), new Point(0,1), new Point(-1,1)];
-    this.state = 0;
-}
-Block7.prototype =
-{
-    constructor:Block7,
-    rotate:
-        function()
-        {
-            if (this.state == 0)        // 00
-            {                           //00
-                this.state = 1;
-
-                this.points[0].x = 0;
-                this.points[0].y = -1;
-                this.points[2].x = 1;
-                this.points[2].y = 0;
-                this.points[3].x = 1;
-                this.points[3].y = 1;
-            }
-            else                        //1
-            {                           //11
-                this.state = 0;         // 1
-
-                this.points[0].x = 1;
-                this.points[0].y = 0;
-                this.points[2].x = 0;
-                this.points[2].y = 1;
-                this.points[3].x = -1;
-                this.points[3].y = 1;
-            }
-
-        }
-};
