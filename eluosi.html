@@ -25,6 +25,13 @@
         var GAME_AREA_TOP = 10;
         var GAME_AREA_LEFT = 10;
 
+        var NEXT_BLOCK_AREA_TOP = GAME_AREA_TOP + 50;
+        var NEXT_BLOCK_AREA_LEFT = GAME_AREA_LEFT + GAME_AREA_WIDTH * BLOCK_SIZE + 50;
+        var NEXT_BLOCK_AREA_WIDTH = 6 * BLOCK_SIZE;
+        var NEXT_BLOCK_AREA_HEIGHT = 5 * BLOCK_SIZE;
+        var NEXT_BLOCK_X = NEXT_BLOCK_AREA_LEFT + BLOCK_SIZE * 2;
+        var NEXT_BLOCK_Y = NEXT_BLOCK_AREA_TOP + BLOCK_SIZE * 2;
+
 
         //canvas
         var main_canvas;
@@ -35,6 +42,10 @@
         var sign_context;
 
         var bitmapArray = new Array();  //0为空,1~7为颜色
+
+
+        var currentBlock;
+        var nextBlock;
         //顺序为从左上至右下，row=0为最上一层
         function getBitMapInfo(row,column)
         {
@@ -63,6 +74,10 @@
             }
 
 
+
+            currentBlock = getRandomBlock();
+            nextBlock = getRandomBlock();
+
             redraw();
 //            var block = getRandomBlock();
 //            drawBlock(00,00,block,main_context);
@@ -71,7 +86,9 @@
         function redraw()
         {
             main_context.fillRect(0,0,MAIN_CONTEXT_WIDTH,MAIN_CONTEXT_HEIGHT);
-            main_context.clearRect(GAME_AREA_LEFT,GAME_AREA_TOP,GAME_AREA_WIDTH * BLOCK_SIZE,GAME_AREA_HEIGHT * BLOCK_SIZE);
+            //game area
+            main_context.clearRect(GAME_AREA_LEFT, GAME_AREA_TOP,GAME_AREA_WIDTH * BLOCK_SIZE,GAME_AREA_HEIGHT * BLOCK_SIZE);
+
             for (var row = 0; row < GAME_AREA_HEIGHT; row++)
             {
                 for (var column = 0; column < GAME_AREA_WIDTH; column++)
@@ -85,6 +102,11 @@
                     }
                 }
             }
+
+            //next area
+            main_context.clearRect(NEXT_BLOCK_AREA_LEFT, NEXT_BLOCK_AREA_TOP, NEXT_BLOCK_AREA_WIDTH, NEXT_BLOCK_AREA_HEIGHT);
+            drawBlock(NEXT_BLOCK_X, NEXT_BLOCK_Y, nextBlock, main_context);
+
         }
 
         function preBitMapImg(color,x,y,context)
