@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 <head>
     <title></title>
@@ -11,26 +10,121 @@
         {
             display: none;
         }
+        .preloadImg
+        {
+            display: none;
+        }
     </style>
 
-    <script src="block.js" />
+    <script src="block.js" >
+    </script>
     <script type="text/javascript">
+        //constant
+        var GAME_AREA_WIDTH = 10;
+        var GAME_AREA_HEIGHT = 18;
+        var GAME_AREA_TOP = 10;
+        var GAME_AREA_LEFT = 10;
+
+
+        //canvas
+        var main_canvas;
+        var main_context;
+        var MAIN_CONTEXT_WIDTH = 400;
+        var MAIN_CONTEXT_HEIGHT = 380;
+        var sign_canvas;
+        var sign_context;
+
+        var bitmapArray = new Array();  //0为空,1~7为颜色
+        //顺序为从左上至右下，row=0为最上一层
+        function getBitMapInfo(row,column)
+        {
+            if (row < GAME_AREA_HEIGHT && column < GAME_AREA_WIDTH )
+            {
+                return bitmapArray[row * GAME_AREA_WIDTH + column];
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         function init()
         {
+            //canvas
+            main_canvas = document.getElementById("main_canvas");
+            main_context = main_canvas.getContext("2d");
+            sign_canvas = document.getElementById("sign_canvas");
+            sign_context = sign_canvas.getContext("2d");
 
+            //bitmapArray
+            for(var i = 0; i < GAME_AREA_WIDTH * GAME_AREA_HEIGHT; i++)
+            {
+                bitmapArray[i] = 0;
+            }
+
+
+            redraw();
+//            var block = getRandomBlock();
+//            drawBlock(00,00,block,main_context);
+        }
+
+        function redraw()
+        {
+            main_context.fillRect(0,0,MAIN_CONTEXT_WIDTH,MAIN_CONTEXT_HEIGHT);
+            main_context.clearRect(GAME_AREA_LEFT,GAME_AREA_TOP,GAME_AREA_WIDTH * BLOCK_SIZE,GAME_AREA_HEIGHT * BLOCK_SIZE);
+            for (var row = 0; row < GAME_AREA_HEIGHT; row++)
+            {
+                for (var column = 0; column < GAME_AREA_WIDTH; column++)
+                {
+                    var color = getBitMapInfo(row,column);
+                    if(color != 0)
+                    {
+                        var y = GAME_AREA_TOP + row * BLOCK_SIZE;
+                        var x = GAME_AREA_LEFT + column * BLOCK_SIZE;
+                        preBitMapImg(color,x,y,main_context);
+                    }
+                }
+            }
+        }
+
+        function preBitMapImg(color,x,y,context)
+        {
+            var imgName = getColorImage(color);
+            var img = new Image();
+            img.src = imgName;
+            if (img.complete)
+            {
+                context.drawImage(img,x, y, BLOCK_SIZE, BLOCK_SIZE);
+                return;
+            }
+            img.onload = function()
+            {
+                context.drawImage(img,x, y, BLOCK_SIZE, BLOCK_SIZE);
+            };
         }
 
 
     </script>
 </head>
-<body>
+<body onload="init()">
 
-    <canvas width="800" height="600" id="main_canvas">
+    <canvas width="400" height="380" id="main_canvas">
         Your browser doesn't support canvas, please change the browser.
     </canvas>
     <canvas width="200" height="100" id="sign_canvas">
         Your browser doesn't support canvas, please change the browser.
     </canvas>
+
+
+    <!--预读取图片，防止游戏图片加载缓慢-->
+    <img class="preloadImg" src="img/block_color_1.png" />
+    <img class="preloadImg" src="img/block_color_2.png" />
+    <img class="preloadImg" src="img/block_color_3.png" />
+    <img class="preloadImg" src="img/block_color_4.png" />
+    <img class="preloadImg" src="img/block_color_5.png" />
+    <img class="preloadImg" src="img/block_color_6.png" />
+    <img class="preloadImg" src="img/block_color_7.png" />
+
 
 </body>
 </html>

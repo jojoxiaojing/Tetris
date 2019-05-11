@@ -1,17 +1,73 @@
 var BLOCK_SIZE = 20;
 
-function getNewBlock()
+
+function getRandomBlock()
+{
+    var color = parseInt(Math.random() * 7 + 1);
+    var blockNumber = parseInt(Math.random() * 7);
+    return getNewBlock(blockNumber, color);
+}
+
+function getNewBlock(blockNumber, color)
 {
     var block = null;
-    parseInt(Math.random() * 7);
-
+    switch (blockNumber)
+    {
+        case 0:
+            block = new Block0(color);
+            break;
+        case 1:
+            block = new Block1(color);
+            break;
+        case 2:
+            block = new Block2(color);
+            break;
+        case 3:
+            block = new Block3(color);
+            break;
+        case 4:
+            block = new Block4(color);
+            break;
+        case 5:
+            block = new Block5(color);
+            break;
+        case 6:
+            block = new Block6(color);
+            break;
+    }
+    return block;
 }
 
-function drawBlock(x,y,block)
+function drawBlock(x,y,block,context)
 {
     var imgName = getColorImage(block.color);
-    ///////未完
+
+    for (var i = 0; i < block.points.length; i++)
+    {
+        var point = block.points[i];
+        preBlockImage(imgName,point,x,y,context);
+    }
 }
+
+function preBlockImage(url,point,x,y,context)
+{
+    var img = new Image();
+    img.src = url;
+    var bx = point.x;
+    var by = point.y;
+
+    if (img.complete)
+    {
+        context.drawImage(img,x + BLOCK_SIZE * bx, y + BLOCK_SIZE * by, BLOCK_SIZE, BLOCK_SIZE);
+        return;
+    }
+    img.onload = function()
+    {
+
+        context.drawImage(img,x + BLOCK_SIZE * bx, y + BLOCK_SIZE * by, BLOCK_SIZE, BLOCK_SIZE);
+    };
+}
+
 
 function Point(x,y)
 {
@@ -21,7 +77,7 @@ function Point(x,y)
 
 function getColorImage(color)
 {
-    return "img/block" + color + ".png";
+    return "img/block_color_" + color + ".png";
 }
 
 
@@ -177,7 +233,6 @@ Block3.prototype =
                 this.points[3].y = 1;
             }
         }
-
 };
 
 
@@ -285,7 +340,7 @@ Block5.prototype =
 function Block6(color)           //000
 {                                //0
     this.color = color;
-    this.points = [new Point(1,0), new Point(-1,0), new Point(-1, 1)];
+    this.points = [new Point(1,0), new Point(0,0),new Point(-1,0), new Point(-1, 1)];
     this.state = 0;
 }
 Block6.prototype =
@@ -339,7 +394,6 @@ Block6.prototype =
                 this.points[3].y = 1;
             }
         }
-
 };
 
 ///////////////////////////////////
