@@ -46,6 +46,8 @@
 
         var currentBlock;
         var nextBlock;
+        var blockPositionX;
+        var blockPositionY;
         //顺序为从左上至右下，row=0为最上一层
         function getBitMapInfo(row,column)
         {
@@ -73,20 +75,96 @@
                 bitmapArray[i] = 0;
             }
 
-
-
             currentBlock = getRandomBlock();
+            blockPositionX = parseInt(GAME_AREA_WIDTH / 2 - 1);
+            blockPositionY = 0;
+
             nextBlock = getRandomBlock();
 
             redraw();
-//            var block = getRandomBlock();
-//            drawBlock(00,00,block,main_context);
+
+            //key listener
+            window.addEventListener('keydown',handleKeyDown,false);
+//            main_canvas.addEventListener('keydown',handleKeyDown,false);
+        }
+
+        ////////////////////////////////////
+        //KeyBoard Handler
+        function handleKeyDown(event)
+        {
+
+            var keyCode;
+            if (event == null)
+            {
+                keyCode = window.event.keyCode;
+                if(keyCode >= 37 && keyCode <= 40)
+                {
+                    window.event.preventDefault();
+                }
+            }
+            else
+            {
+                keyCode = event.keyCode;
+                if(keyCode >= 37 && keyCode <= 40)
+                {
+                    event.preventDefault();
+                }
+            }
+
+            switch(keyCode)
+            {
+                case 37:        //Left
+                        handleLeftKey();
+//                      alert("Left");
+                        break;
+                case 38:        //Top
+                        handleUpKey();
+//                      alert("Top");
+                    break;
+                case 39:        //Right
+                        handleRightKey();
+//                      alert("Right");
+                    break;
+                case 40:        //Down
+                        handleDownKey();
+//                      alert("Down");
+                    break;
+            }
+        }
+        function handleUpKey()
+        {
+            currentBlock.rotate();
+            redraw();
+        }
+        function handleDownKey()
+        {
+
+        }
+        function handleLeftKey()
+        {
+
+        }
+        function handleRightKey()
+        {
+
+        }
+        ////////////////////////////////////
+        function moveCurrentBlock(x,y)
+        {
+
+        }
+
+
+        function drawCurrentBlock()
+        {
+            drawBlock(GAME_AREA_LEFT + blockPositionX * BLOCK_SIZE, GAME_AREA_TOP + blockPositionY * BLOCK_SIZE, currentBlock, main_context);
         }
 
         function redraw()
         {
             main_context.fillRect(0,0,MAIN_CONTEXT_WIDTH,MAIN_CONTEXT_HEIGHT);
             //game area
+
             main_context.clearRect(GAME_AREA_LEFT, GAME_AREA_TOP,GAME_AREA_WIDTH * BLOCK_SIZE,GAME_AREA_HEIGHT * BLOCK_SIZE);
 
             for (var row = 0; row < GAME_AREA_HEIGHT; row++)
@@ -107,6 +185,8 @@
             main_context.clearRect(NEXT_BLOCK_AREA_LEFT, NEXT_BLOCK_AREA_TOP, NEXT_BLOCK_AREA_WIDTH, NEXT_BLOCK_AREA_HEIGHT);
             drawBlock(NEXT_BLOCK_X, NEXT_BLOCK_Y, nextBlock, main_context);
 
+            //currentBlock
+            drawCurrentBlock();
         }
 
         function preBitMapImg(color,x,y,context)

@@ -68,6 +68,57 @@ function preBlockImage(url,point,x,y,context)
     };
 }
 
+/////////////////////////////
+//Block Edge
+function getBlockLeft(block)
+{
+    var left = 0;
+    for (var i = 0; i < block.points.length; i++)
+    {
+        if (block.points[i].x < left)
+        {
+            left = block.points[i].x;
+        }
+    }
+    return left;
+}
+function getBlockRight(block)
+{
+    var right = 0;
+    for (var i = 0; i < block.points.length; i++)
+    {
+        if(block.points[i].x > right)
+        {
+            right = block.points[i].x;
+        }
+    }
+    return right;
+}
+function getBlockTop(block)
+{
+    var top = 0;
+    for (var i = 0; i < block.points.length; i++)
+    {
+        if (block.points[i].y < top)
+        {
+            top = block.points[i].y;
+        }
+    }
+    return top;
+}
+function getBlockBottom(block)
+{
+    var bottom = 0;
+    for (var i = 0; i < block.points.length; i++)
+    {
+        if (block.points[i].y > bottom)
+        {
+            bottom = block.points[i].y;
+        }
+    }
+    return bottom;
+}
+////////////////////////
 
 function Point(x,y)
 {
