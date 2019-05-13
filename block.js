@@ -145,21 +145,28 @@ Block0.prototype =
     rotate:
         function()
         {
-            if (this.state == 0)        // 00
-            {                           //00
-                this.state = 1;
-
-                this.points[0].x = 0;
-                this.points[0].y = -1;
-                this.points[2].x = 1;
-                this.points[2].y = 0;
-                this.points[3].x = 1;
-                this.points[3].y = 1;
+            if (this.state == 0)
+            {
+                this.setState(1);
             }
-            else                        //1
-            {                           //11
-                this.state = 0;         // 1
-
+            else
+            {
+                this.setState(0);
+            }
+        },
+    rotateBack:
+        function()
+        {
+            this.rotate();
+        },
+    setState:
+        function(state)
+        {
+            this.state = state;
+            if (this.state == 0)
+            {
+                // 00
+                //00
                 this.points[0].x = 1;
                 this.points[0].y = 0;
                 this.points[2].x = 0;
@@ -167,7 +174,18 @@ Block0.prototype =
                 this.points[3].x = -1;
                 this.points[3].y = 1;
             }
-
+            else
+            {
+                //1
+                //11
+                // 1
+                this.points[0].x = 0;
+                this.points[0].y = -1;
+                this.points[2].x = 1;
+                this.points[2].y = 0;
+                this.points[3].x = 1;
+                this.points[3].y = 1;
+            }
         }
 };
 
@@ -185,6 +203,11 @@ Block1.prototype =
         function()
         {
             return; //正方形方块不用旋转
+        },
+    rotateBack:
+        function()
+        {
+            return;
         }
 };
 
@@ -201,10 +224,41 @@ Block2.prototype =
     rotate:
         function()
         {
-            if(this.state == 0)         //00
-            {                           // 00
-                this.state = 1;
+            if(this.state == 0)
+            {
+                this.setState(1);
+            }
+            else
+            {
+                this.setState(0);
+            }
+        },
+    rotateBack:
+        function()
+        {
+            this.rotate();
+        },
+    setState:
+        function(state)
+        {
+            this.state = state;
+            if (this.state == 0)
+            {
+                //00
+                // 00
+                this.points[0].x = -1;
+                this.points[0].y = 0;
+                this.points[2].x = 0;
+                this.points[2].y = 1;
+                this.points[3].x = 1;
+                this.points[3].y = 1;
 
+            }
+            else
+            {
+                // 1
+                //11
+                //1
                 this.points[0].x = 0;
                 this.points[0].y = 1;
                 this.points[2].x = 1;
@@ -212,18 +266,8 @@ Block2.prototype =
                 this.points[3].x = 1;
                 this.points[3].y = -1;
             }
-            else                        // 1
-            {                           //11
-                this.state = 0;         //1
-
-                this.points[0].x = -1;
-                this.points[0].y = 0;
-                this.points[2].x = 0;
-                this.points[2].y = 1;
-                this.points[3].x = 1;
-                this.points[3].y = 1;
-            }
         }
+
 };
 
 ///////////////////////////////////
@@ -239,43 +283,36 @@ Block3.prototype =
     rotate:
         function()
         {
-            if(this.state == 0)     //000
-            {                       //  0
-                this.state = 1;
-
-                this.points[0].x = 0;
-                this.points[0].y = -1;
-                this.points[2].x = 0;
-                this.points[2].y = 1;
-                this.points[3].x = -1;
-                this.points[3].y = 1;
+            if (this.state == 3)
+            {
+                this.setState(0);
             }
-            else if (this.state == 1)   // 1
-            {                           // 1
-                this.state = 2;         //11
-
-                this.points[0].x = 1;
-                this.points[0].y = 0;
-                this.points[2].x = -1;
-                this.points[2].y = 0;
-                this.points[3].x = -1;
-                this.points[3].y = -1;
+            else
+            {
+                this.setState(this.state + 1);
             }
-            else if (this.state == 2)   //2
-            {                           //222
-                this.state = 3;
-
-                this.points[0].x = 0;
-                this.points[0].y = 1;
-                this.points[2].x = 0;
-                this.points[2].y = -1;
-                this.points[3].x = 1;
-                this.points[3].y = -1;
+        },
+    rotateBack:
+        function()
+        {
+            if (this.state == 0)
+            {
+                this.setState(3);
             }
-            else if (this.state == 3)   //33
-            {                           //3
-                this.state = 0;         //3
+            else
+            {
+                this.setState(this.state - 1);
+            }
 
+        },
+    setState:
+        function(state)
+        {
+            this.state = state;
+            if (this.state == 0)
+            {
+                //000
+                //  0
                 this.points[0].x = -1;
                 this.points[0].y = 0;
                 this.points[2].x = 1;
@@ -283,11 +320,48 @@ Block3.prototype =
                 this.points[3].x = 1;
                 this.points[3].y = 1;
             }
+            else if (this.state == 1)
+            {
+                // 1
+                // 1
+                //11
+                this.points[0].x = 0;
+                this.points[0].y = -1;
+                this.points[2].x = 0;
+                this.points[2].y = 1;
+                this.points[3].x = -1;
+                this.points[3].y = 1;
+
+            }
+            else if (this.state == 2)
+            {
+                //2
+                //222
+                this.points[0].x = 1;
+                this.points[0].y = 0;
+                this.points[2].x = -1;
+                this.points[2].y = 0;
+                this.points[3].x = -1;
+                this.points[3].y = -1;
+            }
+            else
+            {
+                //33
+                //3
+                //3
+                this.points[0].x = 0;
+                this.points[0].y = 1;
+                this.points[2].x = 0;
+                this.points[2].y = -1;
+                this.points[3].x = 1;
+                this.points[3].y = -1;
+
+            }
         }
+
 };
 
 
-///////////////////////////////////
 function Block4(color)              //0000
 {
     this.color = color;
@@ -300,27 +374,46 @@ Block4.prototype =
     rotate:
         function()
         {
-            if (this.state == 0)      //0000
+            if (this.state == 0)
             {
-                this.state = 1;
-
-                this.points[0].x = 0;
-                this.points[0].y = -1;
-                this.points[2].x = 0;
-                this.points[2].y = 1;
-                this.points[3].x = 0;
-                this.points[3].y = 2;
+                this.setState(1);
             }
-            else                      //1
-            {                         //1
-                this.state = 0;       //1
-                //1
+            else
+            {
+                this.setState(0);
+            }
+        },
+    rotateBack:
+        function()
+        {
+            this.rotate();
+        },
+    setState:
+        function(state)
+        {
+            this.state = state;
+            if(this.state == 0)
+            {
+                //0000
                 this.points[0].x = -1;
                 this.points[0].y = 0;
                 this.points[2].x = 1;
                 this.points[2].y = 0;
                 this.points[3].x = 2;
                 this.points[3].y = 0;
+            }
+            else
+            {
+                //1
+                //1
+                //1
+                //1
+                this.points[0].x = 0;
+                this.points[0].y = -1;
+                this.points[2].x = 0;
+                this.points[2].y = 1;
+                this.points[3].x = 0;
+                this.points[3].y = 2;
             }
         }
 };
@@ -340,10 +433,47 @@ Block5.prototype =
     rotate:
         function()
         {
-            if (this.state == 0)              //000
-            {                                 // 0
-                this.state = 1;
-
+            if (this.state == 3)
+            {
+                this.setState(0);
+            }
+            else
+            {
+                this.setState(this.state + 1);
+            }
+        },
+    rotateBack:
+        function()
+        {
+            if (this.state == 0)
+            {
+                this.setState(3);
+            }
+            else
+            {
+                this.setState(this.state - 1);
+            }
+        },
+    setState:
+        function(state)
+        {
+            this.state = state;
+            if(this.state == 0)
+            {
+                //000
+                // 0
+                this.points[0].x = -1;
+                this.points[0].y = 0;
+                this.points[2].x = 1;
+                this.points[2].y = 0;
+                this.points[3].x = 0;
+                this.points[3].y = 1;
+            }
+            else if (this.state == 1)
+            {
+                // 1
+                //11
+                // 1
                 this.points[0].x = 0;
                 this.points[0].y = -1;
                 this.points[2].x = 0;
@@ -351,10 +481,10 @@ Block5.prototype =
                 this.points[3].x = -1;
                 this.points[3].y = 0;
             }
-            else if (this.state == 1)         // 1
-            {                                 //11
-                this.state = 2;               // 1
-
+            else if (this.state == 2)
+            {
+                // 2
+                //222
                 this.points[0].x = 1;
                 this.points[0].y = 0;
                 this.points[2].x = -1;
@@ -362,27 +492,17 @@ Block5.prototype =
                 this.points[3].x = 0;
                 this.points[3].y = -1;
             }
-            else if (this.state == 2)         // 2
-            {                                 //222
-                this.state = 3;
-
+            else
+            {
+                //3
+                //33
+                //3
                 this.points[0].x = 0;
                 this.points[0].y = 1;
                 this.points[2].x = 0;
                 this.points[2].y = -1;
                 this.points[3].x = 1;
                 this.points[3].y = 0;
-            }
-            else                              //3
-            {                                 //33
-                this.state = 0;               //3
-
-                this.points[0].x = -1;
-                this.points[0].y = 0;
-                this.points[2].x = 1;
-                this.points[2].y = 0;
-                this.points[3].x = 0;
-                this.points[3].y = 1;
             }
         }
 };
@@ -400,10 +520,48 @@ Block6.prototype =
     rotate:
         function()
         {
-            if (this.state == 0)         //000
-            {                            //0
-                this.state = 1;
+            if (this.state == 3)
+            {
+                this.setState(0);
+            }
+            else
+            {
+                this.setState(this.state + 1);
+            }
+        },
+    rotateBack:
+         function()
+         {
+             if (this.state == 0)
+             {
+                 this.setState(3);
+             }
+             else
+             {
+                 this.setState(this.state - 1);
+             }
 
+         },
+    setState:
+        function(state)
+        {
+            this.state = state;
+            if(this.state == 0)
+            {
+                //000
+                //0
+                this.points[0].x = 1;
+                this.points[0].y = 0;
+                this.points[2].x = -1;
+                this.points[2].y = 0;
+                this.points[3].x = -1;
+                this.points[3].y = 1;
+            }
+            else if (this.state == 1)
+            {
+                //11
+                // 1
+                // 1
                 this.points[0].x = 0;
                 this.points[0].y = 1;
                 this.points[2].x = 0;
@@ -411,10 +569,10 @@ Block6.prototype =
                 this.points[3].x = -1;
                 this.points[3].y = -1;
             }
-            else if (this.state == 1)    //11
-            {                            // 1
-                this.state = 2;          // 1
-
+            else if (this.state == 2)
+            {
+                //  2
+                //222
                 this.points[0].x = -1;
                 this.points[0].y = 0;
                 this.points[2].x = 1;
@@ -422,26 +580,16 @@ Block6.prototype =
                 this.points[3].x = 1;
                 this.points[3].y = -1;
             }
-            else if (this.state == 2)   //  2
-            {                           //222
-                this.state = 3;
-
+            else if (this.state == 3)
+            {
+                //3
+                //3
+                //33
                 this.points[0].x = 0;
                 this.points[0].y = -1;
                 this.points[2].x = 0;
                 this.points[2].y = 1;
                 this.points[3].x = 1;
-                this.points[3].y = 1;
-            }
-            else if (this.state == 3)   //3
-            {                           //3
-                this.state = 0;         //33
-
-                this.points[0].x = 1;
-                this.points[0].y = 0;
-                this.points[2].x = -1;
-                this.points[2].y = 0;
-                this.points[3].x = -1;
                 this.points[3].y = 1;
             }
         }
