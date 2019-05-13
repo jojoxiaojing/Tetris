@@ -138,22 +138,39 @@
         }
         function handleDownKey()
         {
+            moveCurrentBlock(0,1);
 
         }
         function handleLeftKey()
         {
+            moveCurrentBlock(-1,0);
 
         }
         function handleRightKey()
         {
+            moveCurrentBlock(1,0);
 
         }
         ////////////////////////////////////
-        function moveCurrentBlock(x,y)
+        //Block Movement
+        function moveCurrentBlock(mX, mY)       //mX = 1 or -1, mY = 1
         {
-
+            if (mX == 1 && mY == 0)             //Move Right
+            {
+                blockPositionX += 1;
+                redraw();
+            }
+            else if (mX == -1 && mY == 0)       //Move Left
+            {
+                blockPositionX -= 1;
+                redraw();
+            }
+            else if (mX == 0 && mY == 1)        //Move Down
+            {
+                blockPositionY += 1;
+                redraw();
+            }
         }
-
 
         function drawCurrentBlock()
         {
