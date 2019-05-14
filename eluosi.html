@@ -60,6 +60,17 @@
                 return 0;
             }
         }
+        function setBitMapInfo(row,column,color)
+        {
+            if (row < GAME_AREA_HEIGHT && column < GAME_AREA_WIDTH )
+            {
+                bitmapArray[row * GAME_AREA_WIDTH + column] = color;
+            }
+            else
+            {
+                return 0;
+            }
+        }
 
         function init()
         {
@@ -75,17 +86,21 @@
                 bitmapArray[i] = 0;
             }
 
-            currentBlock = getRandomBlock();
-            blockPositionX = parseInt(GAME_AREA_WIDTH / 2 - 1);
-            blockPositionY = 0;
-
             nextBlock = getRandomBlock();
+            getNextBlock();
 
             redraw();
 
             //key listener
             window.addEventListener('keydown',handleKeyDown,false);
 //            main_canvas.addEventListener('keydown',handleKeyDown,false);
+        }
+        function getNextBlock()
+        {
+            currentBlock = nextBlock;
+            nextBlock = getRandomBlock();
+            blockPositionX = parseInt(GAME_AREA_WIDTH / 2 - 1);
+            blockPositionY = 0;
         }
 
         ////////////////////////////////////
@@ -134,7 +149,42 @@
         function handleUpKey()
         {
             currentBlock.rotate();
+            if(detectConflict(0,0))
+            {
+                currentBlock.rotateBack();
+            }
             redraw();
+        }
+        function detectConflict(offsetX,offsetY)
+        {
+            var bLeft = getBlockLeft(currentBlock);
+            var bRight = getBlockRight(currentBlock);
+            var bBottom = getBlockBottom(currentBlock);
+
+            if(parseInt(bRight + blockPositionX + offsetX) >= parseInt(GAME_AREA_WIDTH))
+            {
+                return true;
+            }
+            if(parseInt(bLeft + blockPositionX + offsetX) < parseInt(0))
+            {
+                return true;
+            }
+            if (parseInt(bBottom + blockPositionY + offsetY) >= parseInt(GAME_AREA_HEIGHT))
+            {
+                return true;
+            }
+            for (var i = 0; i < currentBlock.points.length; i++)
+            {
+                var bX = blockPositionX + currentBlock.points[i].x + offsetX;
+                var bY = blockPositionY + currentBlock.points[i].y + offsetY;
+                if (getBitMapInfo(bY, bX) != 0)
+                {
+                    return true;
+                }
+
+            }
+            return false;
+
         }
         function handleDownKey()
         {
@@ -151,24 +201,52 @@
             moveCurrentBlock(1,0);
 
         }
+
+
         ////////////////////////////////////
         //Block Movement
         function moveCurrentBlock(mX, mY)       //mX = 1 or -1, mY = 1
         {
             if (mX == 1 && mY == 0)             //Move Right
             {
-                blockPositionX += 1;
-                redraw();
+                if (!detectConflict(1,0))
+                {
+                    blockPositionX += 1;
+                    redraw();
+                }
             }
             else if (mX == -1 && mY == 0)       //Move Left
             {
-                blockPositionX -= 1;
-                redraw();
+                if (!detectConflict(-1,0))
+                {
+                    blockPositionX -= 1;
+                    redraw();
+                }
             }
             else if (mX == 0 && mY == 1)        //Move Down
             {
-                blockPositionY += 1;
-                redraw();
+                if (detectConflict(0,1))
+                {
+                    addBlockToBitmap();
+                    getNextBlock();
+                    redraw();
+                }
+                else
+                {
+                    blockPositionY += 1;
+                    redraw();
+                }
+            }
+        }
+        function addBlockToBitmap()
+        {
+            for(var i = 0; i < currentBlock.points.length; i++)
+            {
+                var point = currentBlock.points[i];
+                var x = point.x;
+                var y = point.y;
+                setBitMapInfo(blockPositionY + y, blockPositionX + x, currentBlock.color);
+
             }
         }
 
