@@ -40,6 +40,10 @@ function getNewBlock(blockNumber, color)
 
 function drawBlock(x,y,block,context)
 {
+    if (block == null)
+    {
+        return;
+    }
     var imgName = getColorImage(block.color);
 
     for (var i = 0; i < block.points.length; i++)

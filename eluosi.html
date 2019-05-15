@@ -41,13 +41,17 @@
         var sign_canvas;
         var sign_context;
 
-        var bitmapArray = new Array();  //0为空,1~7为颜色
-
-
         var currentBlock;
         var nextBlock;
         var blockPositionX;
         var blockPositionY;
+
+        var fFalling;
+        var fallingCycleTag;
+        var currentFallingInterval;
+
+        var bitmapArray = new Array();  //0为空,1~7为颜色,-1为消去
+        //Bit Map
         //顺序为从左上至右下，row=0为最上一层
         function getBitMapInfo(row,column)
         {
@@ -80,6 +84,13 @@
             sign_canvas = document.getElementById("sign_canvas");
             sign_context = sign_canvas.getContext("2d");
 
+            gameInit();
+        }
+
+
+        //Game Logic
+        function gameInit()
+        {
             //bitmapArray
             for(var i = 0; i < GAME_AREA_WIDTH * GAME_AREA_HEIGHT; i++)
             {
@@ -89,12 +100,34 @@
             nextBlock = getRandomBlock();
             getNextBlock();
 
-            redraw();
+            gameRedraw();
 
             //key listener
             window.addEventListener('keydown',handleKeyDown,false);
 //            main_canvas.addEventListener('keydown',handleKeyDown,false);
+
+            //开始下落
+            currentFallingInterval = 500;
+            beginFalling();
         }
+
+
+        function beginFalling()
+        {
+            fFalling = true;
+
+            fallingCycleTag = window.setInterval(fallingCycle,currentFallingInterval);
+        }
+        function fallingCycle()
+        {
+            if (fFalling)
+            {
+                moveCurrentBlock(0,1);
+            }
+        }
+
+
+
         function getNextBlock()
         {
             currentBlock = nextBlock;
@@ -153,8 +186,26 @@
             {
                 currentBlock.rotateBack();
             }
-            redraw();
+            gameRedraw();
         }
+        function handleDownKey()
+        {
+            moveCurrentBlock(0,1);
+
+        }
+        function handleLeftKey()
+        {
+            moveCurrentBlock(-1,0);
+
+        }
+        function handleRightKey()
+        {
+            moveCurrentBlock(1,0);
+
+        }
+
+        ////////////////////////////////////
+        //Detect
         function detectConflict(offsetX,offsetY)
         {
             var bLeft = getBlockLeft(currentBlock);
@@ -181,38 +232,24 @@
                 {
                     return true;
                 }
-
             }
             return false;
-
         }
-        function handleDownKey()
-        {
-            moveCurrentBlock(0,1);
-
-        }
-        function handleLeftKey()
-        {
-            moveCurrentBlock(-1,0);
-
-        }
-        function handleRightKey()
-        {
-            moveCurrentBlock(1,0);
-
-        }
-
 
         ////////////////////////////////////
         //Block Movement
         function moveCurrentBlock(mX, mY)       //mX = 1 or -1, mY = 1
         {
+            if (!fFalling)
+            {
+                return;
+            }
             if (mX == 1 && mY == 0)             //Move Right
             {
                 if (!detectConflict(1,0))
                 {
                     blockPositionX += 1;
-                    redraw();
+                    gameRedraw();
                 }
             }
             else if (mX == -1 && mY == 0)       //Move Left
@@ -220,7 +257,7 @@
                 if (!detectConflict(-1,0))
                 {
                     blockPositionX -= 1;
-                    redraw();
+                    gameRedraw();
                 }
             }
             else if (mX == 0 && mY == 1)        //Move Down
@@ -228,13 +265,19 @@
                 if (detectConflict(0,1))
                 {
                     addBlockToBitmap();
-                    getNextBlock();
-                    redraw();
+                    if (blockDetect())
+                    {
+                    }
+                    else
+                    {
+                        getNextBlock();
+                        gameRedraw();
+                    }
                 }
                 else
                 {
                     blockPositionY += 1;
-                    redraw();
+                    gameRedraw();
                 }
             }
         }
@@ -250,12 +293,13 @@
             }
         }
 
+        //Draw
         function drawCurrentBlock()
         {
             drawBlock(GAME_AREA_LEFT + blockPositionX * BLOCK_SIZE, GAME_AREA_TOP + blockPositionY * BLOCK_SIZE, currentBlock, main_context);
         }
 
-        function redraw()
+        function gameRedraw()
         {
             main_context.fillRect(0,0,MAIN_CONTEXT_WIDTH,MAIN_CONTEXT_HEIGHT);
             //game area
@@ -267,7 +311,7 @@
                 for (var column = 0; column < GAME_AREA_WIDTH; column++)
                 {
                     var color = getBitMapInfo(row,column);
-                    if(color != 0)
+                    if(color > 0 )
                     {
                         var y = GAME_AREA_TOP + row * BLOCK_SIZE;
                         var x = GAME_AREA_LEFT + column * BLOCK_SIZE;
@@ -299,6 +343,83 @@
                 context.drawImage(img,x, y, BLOCK_SIZE, BLOCK_SIZE);
             };
         }
+
+        //Detect
+        function blockDetect()
+        {
+            var disappearArray = new Array;
+            for (var row = 0; row < GAME_AREA_HEIGHT; row++)
+            {
+                var fDisappear = true;
+                for (var column = 0; column < GAME_AREA_WIDTH; column++)
+                {
+                    if (getBitMapInfo(row,column) == 0)
+                    {
+                        fDisappear = false;
+                        break;
+                    }
+                }
+                if (fDisappear)
+                {
+                    disappearArray.push(row);
+                }
+            }
+
+            if (disappearArray.length != 0)
+            {
+                //有方块需要消去
+                fFalling = false;
+                currentBlock = null;
+                disppearBlock(disappearArray);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        function disppearBlock(rowArray)
+        {
+            for (var i = 0; i < rowArray.length; i++)
+            {
+                var row = rowArray[i];
+                for(var j = 0; j < GAME_AREA_WIDTH; j++)
+                {
+                    setBitMapInfo(row,j,-1);
+//                    alert(row);
+                }
+            }
+            gameRedraw();
+            setTimeout(disppearRestart,100);
+        }
+        function disppearRestart()
+        {
+            var copyFrom = GAME_AREA_HEIGHT - 1;
+            for (var i = GAME_AREA_HEIGHT - 1; i >= 0; i--)
+            {
+                while(copyFrom >= 0 && getBitMapInfo(copyFrom,0) == -1)
+                {
+                    --copyFrom;
+                }
+
+
+                for (var j = 0; j < GAME_AREA_WIDTH; j++)
+                {
+                    var copyValue = 0;
+                    if (copyFrom >= 0 )
+                    {
+                        copyValue = getBitMapInfo(copyFrom,j);
+                    }
+                    setBitMapInfo(i,j,copyValue);
+                }
+                --copyFrom;
+            }
+            getNextBlock();
+            fFalling = true;
+            gameRedraw();
+        }
+
 
 
     </script>
