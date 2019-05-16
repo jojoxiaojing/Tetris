@@ -1,0 +1,46 @@
+<html>
+<head>
+    <title>Tetris</title>
+    <style type="text/css">
+        body
+        {
+            /*background-color: lightcyan;*/
+        }
+        #main_canvas
+        {
+            border: 3px solid black;
+        }
+        #sign_canvas
+        {
+            display: none;
+        }
+        .preloadImg
+        {
+            display: none;
+        }
+    </style>
+</head>
+<body onload="init()">
+
+    <canvas width="400" height="380" id="main_canvas">
+        Your browser doesn't support canvas, please change the browser.
+    </canvas>
+    <canvas width="200" height="100" id="sign_canvas">
+        Your browser doesn't support canvas, please change the browser.
+    </canvas>
+
+
+    <!--预读取图片，防止游戏图片加载缓慢-->
+    <img class="preloadImg" src="img/block_color_1.png" />
+    <img class="preloadImg" src="img/block_color_2.png" />
+    <img class="preloadImg" src="img/block_color_3.png" />
+    <img class="preloadImg" src="img/block_color_4.png" />
+    <img class="preloadImg" src="img/block_color_5.png" />
+    <img class="preloadImg" src="img/block_color_6.png" />
+    <img class="preloadImg" src="img/block_color_7.png" />
+
+    <script src="block.js" ></script>
+    <script src="jquery-2.0.0.min.js"></script>
+    <script src="tetris.js"></script>
+</body>
+</html>
