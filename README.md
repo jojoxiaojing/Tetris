@@ -6,3 +6,7 @@ Begin page:
 ![alt text](https://github.com/jojoxiaojing/Tetris/blob/master/start.png)
 
 Playing page
+![alt text](https://github.com/jojoxiaojing/Tetris/blob/master/im1.png)
+
+Playing page:
+![alt text](https://github.com/jojoxiaojing/Tetris/blob/master/im2.png)
